@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import Field
 
-from app.catalog import days_open, group_by_normalized_name, has_no_operator, is_closed, is_open
+from app.catalog import days_open, group_by_normalized_name, has_no_operator, is_closed, is_frozen_open, is_open
 from app.tickets_api import TicketsApiClient
 from app.tools.base import Tool
 from app.tools.common import FilterError, TicketFilters, not_found, resolve_api_filters, select_tickets
@@ -100,7 +100,7 @@ async def resumo_operacional_tickets(client: TicketsApiClient, a: OperacionalArg
         "filtros": sel.applied, "truncado": sel.truncated, "total": len(tickets),
         "abertos": len(opened), "fechados": sum(is_closed(t) for t in tickets),
         "sem_operador": sum(has_no_operator(t) for t in tickets),
-        "congelados": sum(t.get("is_frozen") is True for t in tickets),
+        "congelados": sum(is_frozen_open(t) for t in tickets),
         "por_prioridade": [{"chave": k, "quantidade": v} for k, v in by_priority.items()],
         "abertos_com_mais_de_7_dias": sum(days_open(t["opening_date"]) > 7 for t in opened),
         "mais_antigos_em_aberto": [

@@ -47,3 +47,13 @@ def test_not_found_and_none():
     assert resolve_name(USERS, "zzz").describe("operador", "zzz") == 'operador "zzz" não encontrado'
     r = resolve_name(USERS, None)
     assert not r.not_found and r.id is None and r.describe("x", "y") is None
+
+
+def test_frozen_only_counts_open_tickets():
+    from app.catalog import is_frozen_open
+
+    assert is_frozen_open({"is_frozen": True, "status": "EM ATENDIMENTO", "closure_date": None})
+    assert not is_frozen_open({"is_frozen": True, "status": "ENCERRADA", "closure_date": "2026-01-01 10:00:00"})
+    assert not is_frozen_open({"is_frozen": True, "status": "CANCELADO", "closure_date": None})
+    assert not is_frozen_open({"is_frozen": False, "status": "EM ATENDIMENTO", "closure_date": None})
+    assert not is_frozen_open({"status": "EM ATENDIMENTO"})

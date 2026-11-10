@@ -102,6 +102,14 @@ def is_closed(ticket: dict) -> bool:
     return bool(ticket.get("closure_date"))
 
 
+def is_frozen_open(ticket: dict) -> bool:
+    """Congelado = SLA parado num ticket ainda em andamento.
+
+    A API marca is_frozen também nos tickets encerrados e cancelados; esses não contam.
+    """
+    return ticket.get("is_frozen") is True and is_open(ticket)
+
+
 def has_no_operator(ticket: dict) -> bool:
     return not (ticket.get("operator") or "").strip()
 

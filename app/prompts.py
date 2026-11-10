@@ -26,6 +26,8 @@ def build_system_prompt(today: date | None = None) -> str:
             "candidatos, se houver) em vez de adivinhar.",
             "- Resolva datas relativas (\"mês passado\", \"essa semana\", \"ano passado\") a partir de hoje, "
             "sempre no formato AAAA-MM-DD.",
+            "- \"Congelado\" significa SLA parado num ticket ainda em andamento: tickets encerrados ou cancelados "
+            "ficam marcados como congelados no sistema, mas as ferramentas já os ignoram nessa contagem.",
             "- Se um resultado vier truncado ou parcial, avise o usuário.",
             "",
             "## Como usar as ferramentas",

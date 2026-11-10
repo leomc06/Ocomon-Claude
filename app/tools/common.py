@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import Field
 
 from app.catalog import (
-    Resolution, days_open, in_period, is_closed, is_open, has_no_operator,
+    Resolution, days_open, in_period, is_closed, is_frozen_open, is_open, has_no_operator,
     normalize_for_match, resolve_client_name, resolve_name,
 )
 from app.tickets_api import TicketsApiClient
@@ -29,7 +29,7 @@ class TicketFilters(ToolArgs):
     cliente: str | None = Field(None, max_length=100, description="Nome do cliente/solicitante (contato). Aceita nome parcial.")
     prioridade: str | None = Field(None, max_length=100, description='Nome da prioridade (ex.: "Alta", "Urgente").')
     situacao: Situacao | None = Field(
-        None, description="aberto (em andamento, exclui cancelados), fechado (encerrado), congelado ou sem_operador."
+        None, description="aberto (em andamento, exclui cancelados), fechado (encerrado), congelado (SLA parado, só entre os ainda abertos) ou sem_operador."
     )
     data_inicio: str | None = Field(None, pattern=DATE_PATTERN, description="Início (inclusive) do período, AAAA-MM-DD.")
     data_fim: str | None = Field(None, pattern=DATE_PATTERN, description="Fim (inclusive) do período, AAAA-MM-DD.")
@@ -102,7 +102,7 @@ async def select_tickets(client: TicketsApiClient, f: TicketFilters) -> Selectio
             continue
         if f.situacao == "fechado" and not is_closed(t):
             continue
-        if f.situacao == "congelado" and t.get("is_frozen") is not True:
+        if f.situacao == "congelado" and not is_frozen_open(t):
             continue
         if f.situacao == "sem_operador" and not has_no_operator(t):
             continue

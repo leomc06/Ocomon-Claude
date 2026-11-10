@@ -26,7 +26,7 @@ def ticket(n, opened, status, area, operator, priority="Baixa", client="Fábio M
 TICKETS = [  # já em ordem decrescente de abertura, como a API real
     ticket(9, "2026-11-01 10:00:00", "Aberta", "WEB", "Ana Paula", "Alta", issue="Impressora parada", description="a impressora não liga"),
     ticket(8, "2026-10-20 09:00:00", "Em Atendimento", "Suporte", "Carlos Eduardo", "Urgente", client="Luana Sabará", frozen=True),
-    ticket(7, "2026-10-10 09:00:00", "Encerrada", "WEB", "Ana Paula", closed="2026-10-12 10:00:00"),
+    ticket(7, "2026-10-10 09:00:00", "Encerrada", "WEB", "Ana Paula", closed="2026-10-12 10:00:00", frozen=True),
     ticket(6, "2026-09-30 09:00:00", "CANCELADO", "WEB", "Carlos Eduardo"),
     ticket(5, "2026-09-01 09:00:00", "Aberta", "Suporte", "", "Alta", client="fabio moreira"),
     ticket(4, "2026-08-01 09:00:00", "Encerrada", "Suporte", "Mariana Souza", closed="2026-08-05 10:00:00", client="Ana Lima"),

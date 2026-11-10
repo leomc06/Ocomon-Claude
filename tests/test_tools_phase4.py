@@ -54,6 +54,7 @@ async def test_listar_tickets_closed_in_period_by_closure_date_oldest_first():
 async def test_listar_tickets_sem_operador_congelado_prioridade_numero():
     install()
     assert [t["number"] for t in (await run("listar_tickets", {"situacao": "sem_operador"}))["tickets"]] == [5]
+    # o ticket 7 (encerrado) também está com is_frozen, mas só os abertos contam
     assert [t["number"] for t in (await run("listar_tickets", {"situacao": "congelado"}))["tickets"]] == [8]
     assert [t["number"] for t in (await run("listar_tickets", {"prioridade": "alta"}))["tickets"]] == [9, 5]
     assert (await run("listar_tickets", {"numero": 7}))["total"] == 1

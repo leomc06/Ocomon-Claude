@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from app.catalog import days_open, is_closed, is_open, normalize_for_match, resolve_client_name, resolve_name
+from app.catalog import days_open, is_closed, is_frozen_open, is_open, normalize_for_match, resolve_client_name, resolve_name
 from app.tickets_api import TicketsApiClient
 from app.tools.base import Tool, ToolArgs
 from app.tools.common import DATE_PATTERN
@@ -13,7 +13,7 @@ def profile(tickets: list[dict]) -> dict:
         "total": len(tickets),
         "abertos": len(opened),
         "fechados": sum(is_closed(t) for t in tickets),
-        "congelados": sum(t.get("is_frozen") is True for t in tickets),
+        "congelados": sum(is_frozen_open(t) for t in tickets),
         "prioridade_alta_ou_urgente_abertos": sum(t.get("priority") in {"Alta", "Urgente"} for t in opened),
         "mais_antigo_aberto": None if oldest is None else {
             "numero": oldest["number"], "opening_date": oldest["opening_date"],
