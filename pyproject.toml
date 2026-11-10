@@ -1,0 +1,24 @@
+[project]
+name = "ocomon-claude"
+version = "0.1.0"
+description = "Perguntas em linguagem natural sobre tickets do OcoMon, via API do Claude"
+requires-python = ">=3.11"
+dependencies = [
+  "anthropic>=0.40",
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "httpx>=0.27",
+  "pydantic>=2.7",
+  "pydantic-settings>=2.4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "respx>=0.21"]
+
+[tool.setuptools]
+packages = ["app", "app.tools"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
