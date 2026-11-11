@@ -69,3 +69,24 @@ export function toCsv(table, sep = ";") {
   };
   return [table.header, ...table.rows].map((r) => r.map(cell).join(sep)).join("\r\n");
 }
+
+// Fatias da pizza: ângulos em radianos a partir das 12h, no sentido horário.
+export function pieSlices(parts) {
+  const total = parts.reduce((s, p) => s + p.value, 0);
+  let angle = 0;
+  return parts.map((p) => {
+    const sweep = (p.value / total) * 2 * Math.PI;
+    const slice = { ...p, start: angle, end: angle + sweep, share: p.value / total };
+    angle += sweep;
+    return slice;
+  });
+}
+
+export function arcPath(cx, cy, r, start, end) {
+  const point = (a) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
+  const [x0, y0] = point(start);
+  const [x1, y1] = point(end);
+  const large = end - start > Math.PI ? 1 : 0;
+  const f = (n) => n.toFixed(2);
+  return `M ${cx} ${cy} L ${f(x0)} ${f(y0)} A ${r} ${r} 0 ${large} 1 ${f(x1)} ${f(y1)} Z`;
+}

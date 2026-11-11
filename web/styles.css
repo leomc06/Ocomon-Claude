@@ -100,3 +100,16 @@ th { background: var(--bg); }
   body.print-one .msg { border: 0; }
   .viz { forced-color-adjust: none; }
 }
+
+/* ---- pizza ---- */
+.pie-wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; }
+.pie { width: 100%; max-width: 240px; flex: 0 0 auto; }
+.slice { stroke: var(--surface-1); stroke-width: 2; stroke-linejoin: round; }
+.slice:hover, .slice:focus-visible { opacity: .85; outline: none; }
+.slice:focus-visible { stroke: var(--text-primary); }
+.pie-s1 { fill: var(--series-1); } .pie-s2 { fill: var(--series-2); } .pie-s3 { fill: var(--series-3); }
+.pie-s4 { fill: var(--series-4); } .pie-s5 { fill: var(--series-5); } .pie-s6 { fill: var(--series-6); }
+.pie-other { fill: var(--muted); }
+.pie-label { font-size: 12px; font-weight: 600; fill: #fff; pointer-events: none; }
+.pie-s4-text, .pie-other-text { fill: #0b0b0b; }
+.viz .legend-values { flex-direction: column; flex-wrap: nowrap; margin: 0; gap: 6px; }

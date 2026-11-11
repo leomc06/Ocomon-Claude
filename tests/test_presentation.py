@@ -6,7 +6,9 @@ from app.presentation import build_suggestions, detect_visualization, history_no
 @pytest.mark.parametrize("q,expected", [
     ("Quantos tickets por área? Quero em gráfico", "barras"),
     ("mostre em um gráfico de barras", "barras"),
-    ("me dá uma pizza dos status", "proporcao"),
+    ("me dá uma pizza dos status", "pizza"),
+    ("mostre em rosca", "pizza"),
+    ("qual a proporção por área?", "proporcao"),
     ("Liste os abertos em tabela", "tabela"),
     ("em TABELA e depois gráfico", "tabela"),
     ("em gráfico ou em tabela?", "barras"),

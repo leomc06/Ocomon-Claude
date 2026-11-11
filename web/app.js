@@ -1,6 +1,6 @@
 import { renderMarkdown } from "./markdown.js";
 import { chartData, extractTables, proportionParts, toCsv } from "./tables.js";
-import { fitSegmentLabels, renderBars, renderProportion } from "./charts.js";
+import { fitSegmentLabels, renderBars, renderPie, renderProportion } from "./charts.js";
 
 const chat = document.getElementById("chat");
 const form = document.getElementById("form");
@@ -92,9 +92,12 @@ function buildAssistant(data) {
   }
   if (chart) {
     views.barras = () => renderBars(chart);
-    if (proportionParts(chart)) views.proporcao = () => renderProportion(chart);
+    if (proportionParts(chart)) {
+      views.pizza = () => renderPie(chart);
+      views.proporcao = () => renderProportion(chart);
+    }
   }
-  const labels = { texto: "Texto", tabela: "Tabela", barras: "Barras", proporcao: "Proporção" };
+  const labels = { texto: "Texto", tabela: "Tabela", barras: "Barras", pizza: "Pizza", proporcao: "Proporção" };
 
   const toolbar = document.createElement("div");
   toolbar.className = "toolbar";
@@ -122,7 +125,8 @@ function buildAssistant(data) {
   msg.replaceChildren(toolbar, view);
 
   const wanted = data.visualizacaoPreferida;
-  const initial = wanted && views[wanted] ? wanted : wanted === "proporcao" && views.barras ? "barras" : "texto";
+  const chartWanted = wanted === "pizza" || wanted === "proporcao";
+  const initial = wanted && views[wanted] ? wanted : chartWanted && views.barras ? "barras" : "texto";
   show(initial);
 
   if (data.sugestoes?.length) {

@@ -1,5 +1,5 @@
 // Gráficos em HTML/CSS (sem innerHTML). Barras horizontais ordenadas e barra segmentada de proporção.
-import { formatPercent, proportionParts } from "./tables.js";
+import { arcPath, formatPercent, pieSlices, proportionParts } from "./tables.js";
 
 const MAX_BARS = 20;
 
@@ -80,4 +80,60 @@ export function fitSegmentLabels(root) {
     label.style.visibility = "visible";
     label.style.visibility = block.clientWidth >= label.offsetWidth + 16 ? "visible" : "hidden";
   }
+}
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function svg(tag, attrs = {}) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, String(v));
+  return node;
+}
+
+// Pizza: no máximo 6 fatias (o resto vira "Outros"), 2px de superfície entre fatias, legenda com valores.
+// O percentual só vai dentro da fatia quando ela é grande o bastante; o valor sempre está na legenda.
+export function renderPie(data) {
+  const parts = proportionParts(data);
+  if (!parts) return null;
+  const slices = pieSlices(parts);
+  const root = el("div", "viz");
+  root.setAttribute("role", "group");
+  root.setAttribute("aria-label", `Pizza: ${data.valueHeader} por ${data.labelHeader}`);
+  root.append(el("p", "viz-title", `${data.valueHeader} por ${data.labelHeader.toLowerCase()}`));
+
+  const wrap = el("div", "pie-wrap");
+  const chart = svg("svg", { viewBox: "0 0 200 200", class: "pie", role: "img" });
+  chart.setAttribute("aria-label", slices.map((s) => `${s.label}: ${formatPercent(s.value, data.total)}`).join("; "));
+  const legend = el("ul", "legend legend-values");
+
+  slices.forEach((s, i) => {
+    const slot = s.other ? "other" : `s${i + 1}`;
+    const share = formatPercent(s.value, parts.reduce((t, p) => t + p.value, 0));
+    const summary = `${s.label}: ${s.text} (${share})`;
+    const path = svg("path", { d: arcPath(100, 100, 92, s.start, s.end), class: `slice pie-${slot}`, tabindex: 0 });
+    path.setAttribute("aria-label", summary);
+    const tip = svg("title");
+    tip.textContent = summary;
+    path.append(tip);
+    chart.append(path);
+
+    if (s.share >= 0.1) {
+      const mid = (s.start + s.end) / 2;
+      const label = svg("text", {
+        x: (100 + 58 * Math.sin(mid)).toFixed(1), y: (100 - 58 * Math.cos(mid)).toFixed(1),
+        class: `pie-label pie-${slot}-text`, "text-anchor": "middle", "dominant-baseline": "central",
+      });
+      label.textContent = share;
+      chart.append(label);
+    }
+
+    const li = el("li");
+    const swatch = el("span", `swatch seg-${slot}`);
+    swatch.setAttribute("aria-hidden", "true");
+    li.append(swatch, document.createTextNode(`${s.label} · ${s.text} (${share})`));
+    legend.append(li);
+  });
+  wrap.append(chart, legend);
+  root.append(wrap);
+  return root;
 }

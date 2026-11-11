@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { chartData, extractTables, formatPercent, parseNumber, proportionParts, toCsv } from "../../web/tables.js";
+import { arcPath, chartData, extractTables, formatPercent, parseNumber, pieSlices, proportionParts, toCsv } from "../../web/tables.js";
 
 const MD = `Resumo:
 
@@ -72,4 +72,17 @@ test("toCsv: separador ;, aspas e proteção contra fórmula", () => {
   assert.equal(lines[1], '"Ola; ""mundo""";5.274');
   assert.equal(lines[2], "\"'=HYPERLINK(\"\"x\"\")\";-3");
   assert.equal(lines[3], "'+cmd;2");
+});
+
+test("pieSlices fecha o círculo e começa às 12h no sentido horário", () => {
+  const s = pieSlices([{ label: "a", value: 3 }, { label: "b", value: 1 }]);
+  assert.equal(s[0].start, 0);
+  assert.ok(Math.abs(s[0].end - 1.5 * Math.PI) < 1e-9);
+  assert.ok(Math.abs(s[1].end - 2 * Math.PI) < 1e-9);
+  assert.equal(s[0].share, 0.75);
+});
+
+test("arcPath: arco grande só passa de 180°; primeiro ponto no topo", () => {
+  assert.match(arcPath(100, 100, 90, 0, 1.5 * Math.PI), /^M 100 100 L 100\.00 10\.00 A 90 90 0 1 1 /);
+  assert.match(arcPath(100, 100, 90, 0, 0.5 * Math.PI), / 0 0 1 190\.00 100\.00 Z$/);
 });

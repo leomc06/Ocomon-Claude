@@ -47,12 +47,12 @@ pergunta ──► POST /api/ia/consultar-os ──► Agent (app/agent.py)
 - `app/prompts.py` — instruções em português (somente leitura, dados só das ferramentas, datas relativas).
 - `app/presentation.py` — visão pedida na pergunta (tabela/barras/proporção) e chips de refinamento.
 - `app/main.py` — FastAPI, limites, auditoria (uma linha JSON por requisição), cabeçalhos de segurança.
-- `web/` — chat sem build: Markdown próprio (sem `innerHTML`), visões Texto/Tabela/Barras/Proporção,
+- `web/` — chat sem build: Markdown próprio (sem `innerHTML`), visões Texto/Tabela/Barras/Pizza/Proporção,
   CSV, PDF (impressão da resposta) e chips.
 
 Decisões: o texto de um ticket é tratado como dado (nunca instrução); a conversa guarda só pergunta + resposta
-(e, num rodapé interno, os filtros usados) para perguntas de acompanhamento; "pizza" vira barra segmentada de
-proporção e gráficos usam a paleta validada da skill `dataviz`.
+(e, num rodapé interno, os filtros usados) para perguntas de acompanhamento; os gráficos usam a paleta validada
+da skill `dataviz` (pizza com até 6 fatias, o resto em "Outros"; "proporção" é a barra segmentada).
 
 ## Testes
 

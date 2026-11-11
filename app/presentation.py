@@ -7,14 +7,15 @@ from app.catalog import normalize_for_match
 
 # (visão, padrão) sobre o texto sem acento. Vence o termo que aparece primeiro na pergunta.
 _VIEWS = [
-    ("proporcao", re.compile(r"\b(pizza|pizzas|donut|rosca|setores|proporcao|proporcoes)\b")),
+    ("pizza", re.compile(r"\b(pizza|pizzas|donut|rosca|setores)\b")),
+    ("proporcao", re.compile(r"\b(proporcao|proporcoes)\b")),
     ("barras", re.compile(r"\b(grafico|graficos|barras?|plote|plotar)\b")),
     ("tabela", re.compile(r"\b(tabela|tabelas|tabular)\b")),
 ]
 
 
 def detect_visualization(question: str) -> str | None:
-    """'tabela', 'barras' ou 'proporcao' quando a pergunta pede explicitamente; senão None."""
+    """'tabela', 'barras', 'pizza' ou 'proporcao' quando a pergunta pede explicitamente; senão None."""
     text = normalize_for_match(question)
     found = [(m.start(), view) for view, pattern in _VIEWS if (m := pattern.search(text))]
     return min(found)[1] if found else None
