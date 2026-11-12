@@ -10,7 +10,7 @@ from typing import Any
 import anthropic
 
 from app.config import Settings
-from app.presentation import history_note
+from app.presentation import history_note, strip_history_note
 from app.prompts import build_system_prompt
 from app.tickets_api import TicketsApiClient
 from app.tools import anthropic_tool_defs, execute_tool
@@ -125,7 +125,7 @@ class Agent:
                 text = text or "Não posso responder a essa pergunta."
             elif response.stop_reason == "max_tokens":
                 text = (text + "\n\n(resposta cortada por limite de tamanho)").strip()
-            result.answer = text
+            result.answer = strip_history_note(text)
             break
         else:
             result.answer = (

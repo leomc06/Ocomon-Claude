@@ -59,3 +59,11 @@ def history_note(calls: list[dict], max_chars: int = 900) -> str:
         return ""
     parts = [f"{c['name']}({json.dumps(c['args'], ensure_ascii=False, separators=(',', ':'))[:300]})" for c in calls]
     return ("\n\n[Consultas desta resposta (contexto interno, não repita ao usuário): " + "; ".join(parts))[:max_chars] + "]"
+
+
+_NOTE_RE = re.compile(r"\s*\[Consultas desta resposta.*?(?:\]\s*$|$)", re.DOTALL)
+
+
+def strip_history_note(text: str) -> str:
+    """Remove da resposta o bloco interno de contexto, caso o modelo o repita."""
+    return _NOTE_RE.sub("", text).rstrip()

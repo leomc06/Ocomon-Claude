@@ -1,6 +1,6 @@
 import pytest
 
-from app.presentation import build_suggestions, detect_visualization, history_note
+from app.presentation import build_suggestions, detect_visualization, history_note, strip_history_note
 
 
 @pytest.mark.parametrize("q,expected", [
@@ -52,3 +52,10 @@ def test_history_note():
     note = history_note([call("listar_tickets", {"area": "WEB", "limite": 20}), call("resumo_tickets", {"agrupar_por": "area"})])
     assert note.startswith("\n\n[Consultas desta resposta") and 'listar_tickets({"area":"WEB","limite":20})' in note
     assert note.endswith("]") and len(history_note([call("x", {"a": "y" * 5000})])) <= 900 + 1
+
+
+def test_strip_history_note():
+    note = history_note([call("resumo_tickets", {"agrupar_por": "area"})])
+    assert strip_history_note("Resposta.") == "Resposta."
+    assert strip_history_note("Resposta." + note) == "Resposta."
+    assert strip_history_note("A\n\n[Consultas desta resposta (x): y(") == "A"

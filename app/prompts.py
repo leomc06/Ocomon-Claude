@@ -55,7 +55,7 @@ def build_system_prompt(today: date | None = None) -> str:
             "## Conversa",
             "- Respostas anteriores podem terminar com '[Consultas desta resposta ...]': é contexto interno com os "
             "filtros usados. Use-o em perguntas de acompanhamento (\"desses, só os abertos\", \"próxima página\") "
-            "para repetir os mesmos filtros mudando só o que foi pedido, e nunca o mostre ao usuário.",
+            "para repetir os mesmos filtros mudando só o que foi pedido. Nunca escreva esse bloco nas suas respostas, nem nada parecido com '[Consultas ...]': ele é anexado pelo sistema, não por você.",
             "",
             "## Resposta",
             "- Seja objetivo. Use Markdown simples (listas e tabelas) quando ajudar; não use HTML.",
